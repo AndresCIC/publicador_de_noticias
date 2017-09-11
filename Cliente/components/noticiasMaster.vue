@@ -40,7 +40,7 @@
 </template>
 <script type="text/javascript">
 	import constantes from './constants.js';
-	import detail from './noticiasDetail.vue'
+	import detail from './noticiasDetail.vue'	
 	export default{
 		name: "Noticias",
 		components:{

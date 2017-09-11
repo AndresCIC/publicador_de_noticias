@@ -5,44 +5,49 @@
 				<div class="form-group">
 					<button :disabled="this.isEditable" id="enableEditButton" class="btn btn-primary" v-on:click="buttonEnableEdit">Modificar</button>
 					<button  id="cancelarButton" class="btn btn-primary" v-on:click="buttonCancelar">Cancelar</button>
-
 				</div>
 			</center>
+
 			<div class="form-group">
-				<label for="Nombre">Nombre:</label>
-				<input :disabled="!isEditable" class="form-control" v-model="noticia.Nombre" type="text" id="NombreInput" placeholder="Nombre"></input>
-			</div>
-			<div class="form-group">
-				<label>Autor:</label>
-				<input :disabled="!isEditable" class="form-control" type="text" v-model="noticia.Autor" id="AutorInput" placeholder="Autor"></input>
-			</div>
-			<div class="form-group">
-				<label>Estilo:</label>
-				<select v-model="noticia.Estilo" class="form-control" :disabled="!isEditable">
-					<option value=1>Formal</option>
-					<option value=2>Informal</option>
-					<option value=3>Libro</option>
-					<option value=4>Académico</option>
-				</select>
+				<label>Título:</label>
+				<input required :disabled="!isEditable" class="form-control" type="text" v-model="noticia.Titulo" id="AutorInput" placeholder="Introduzca título"></input>
 			</div>
 			<div class="form-group">
 				<label>Tipo:</label>
-				<select v-model="noticia.Tipo" class="form-control" :disabled="!isEditable">
-					<option value=1>Texto</option>
-					<option value=2>Imagen</option>
-					<option value=3>HTML</option>
-					<option value=4>Hoja de cálculo</option>
+				<select required v-model="noticia.Tipo" class="form-control" :disabled="!isEditable">
+				Cronologica, InteresHumano, Futuro, Espacial 
+					<option value=1>Cronológica</option>
+					<option value=2>Interés humano</option>
+					<option value=3>Futuro</option>
+					<option value=4>Espacial</option>
 				</select>
 			</div>
-			<label>	<input :disabled="!isEditable" class="checkbox" type="checkbox" v-model="noticia.Accesibilidad" id="AccesibilidadInput" >Accesibilidad</label>
+			
 			<div class="form-group">
-				<label>Precio (€):</label>
-				<input :disabled="!isEditable" class="form-control" type="number" v-model="noticia.Precio" id="precioInput" ></input>
+				<label>Fecha:</label>
+				<input required :disabled="!isEditable" class="form-control" type="datetime-local" v-model="noticia.FechaPublicacion" id="FechaPublicacionInput"></input>
 			</div>
+			<div class="form-group">
+				<label>Contenido</label>
+				<textarea required rows="4" cols="50" :disabled="!isEditable" class="form-control" v-model="noticia.Contenido" id="contenidoInput" placeholder="Introduzca el contenido"></textarea>
+			</div>
+
+			<label>	<input :disabled="!isEditable" class="checkbox" type="checkbox" v-model="noticia.Publicado" id="PublicarInput">Publicar</label>
 			<center>
 				<div class="form-group">
 					<button  id="acceptButton" :disabled="this.computeAcceptButton" class="btn btn-primary" v-on:click="buttonAccept">Aceptar</button>
-					<button  id="borrarButton" :disabled="this.computeDeleteButton" class="btn btn-primary" v-on:click="buttonBorrar">Borrar</button>
+
+					 <button id="borrarButton" :disabled="this.computeDeleteButton" class="btn btn-danger" v-on:click="showModal = true, buttonBorrar()">Borrar</button>
+					  <!-- use the modal component, pass in the prop -->
+					  <modal v-if="showModal" @close="showModal = false">
+					    <!--
+					      you can use custom content here to overwrite
+					      default content
+					    -->
+					    <h4 slot="header">Se requiere confirmación</h4>
+				    	<p slot="body"> ¿Está seguro que quiere borrar esta noticia? </p>
+					    
+					  </modal>
 				</div>
 			</center>
 
@@ -58,6 +63,7 @@
 	};
 	import { EventBus } from './eventBus.js';
 	import constantes from './constants.js';
+	import modal  from './modal.vue';
 
 	export default{
 		created() {
@@ -66,6 +72,7 @@
 			});
 		},	
 		components:{
+			modal
 		},
 		data (){
 			return{
@@ -75,7 +82,8 @@
 				},
 				isEditable:false,
 				menuChoice : "Noticias",
-				estaVacio : false
+				estaVacio : false,
+				showModal : false
 
 			}
 		},
@@ -89,21 +97,6 @@
 					return  true; 
 				}
 				else if(this.state == constantes.STATE_NEW){
-					/*if(this.noticia.Nombre===this.previousNoticia.Nombre){
-						return  true; 
-					}
-					else if(this.noticia.Autor===""){
-						return true;
-					}
-					else if(this.noticia.Tipo === "" ){
-						return true;
-					} 
-					else if(this.noticia.Precio === ""){
-						return  true; 
-					}
-					else{
-						return false;
-					}*/
 					return false;
 				}
 				else if(this.state == constantes.STATE_UPDATE){
@@ -141,15 +134,18 @@
 				this.previousNoticia = $.extend({}, this.noticia)
 			},
 			buttonBorrar: function(){
-				if(confirm("¿Está seguro de que quiere borrar?")){
-					//TODO: Peticion AJAX
-					$.ajax({
-						url:constantes.BASE_URL + this.menuChoice + "/" + this.currentId,
-						method: "DELETE"
-					})
-					.done(this.borradoHandler)
-					.fail(function(){alert("Ha habido un error al borrar.");})
-				}
+				EventBus.$on('Confirmation', confirm => {
+					if(confirm === 'OK'){
+						$.ajax({
+								url:constantes.BASE_URL + this.menuChoice + "/" + this.currentId,
+								method: "DELETE"
+							})
+							.done(this.borradoHandler)
+							.fail(function(){alert("Ha habido un error al borrar.");})
+						}
+								
+				});
+					
 			},
 			buttonCancelar: function(){
 				this.$emit('cancelDetail', true);
@@ -161,49 +157,27 @@
 				this.makeEmptyData();
 			},
 			buttonAccept: function(){
+				if (this.state == constantes.STATE_UPDATE){
+				// TODO: Se hace un PUT con el objeto
 
-				if(this.state == constantes.STATE_NEW){
-					let errores = "";
-					if(this.noticia.Nombre===""){
-						errores+="El valor de Nombre está vacío. \n";
-					}
-					if(this.noticia.Autor===""){
-						errores+="El valor de Autor está vacío. \n";
-					}
-					if(this.noticia.Estilo === "")
-					{
-						errores+="El valor de Estilo está vacío. \n";
-					}
-					if(this.noticia.Tipo === "")
-					{
-						errores+="El valor de Tipo está vacío. \n";
-					}
-					if(this.noticia.Precio === 0){
-						errores+="El valor de Precio no es correcto. \n";	
-					}
-					if(errores != ""){
-						alert("Hay campos no rellenados. No se puede crear el objeto:\n" + errores);
-					}
-					else{
-						$.ajax({url:constantes.BASE_URL + this.menuChoice,
-							method:"POST",
-							data: this.noticia})	
-						.done(this.afterPostHandler)
-						.fail(function(){
-							alert("Fallo en la creacion del elemento");
-						//TODO: Gestionar los fallos
-					})
+				$.ajax({url:constantes.BASE_URL + this.menuChoice + "/" + this.currentId,
+					method:"PUT",
+					data: this.noticia})
+				.done(this.putSubmitData);
 
-					}
 				}
-				else if(this.state == constantes.STATE_UPDATE){
-					// TODO: Se hace un PUT con el objeto
+				else
+				{
+				$.ajax({url:constantes.BASE_URL + this.menuChoice,
+					method:"POST",
+					data: this.noticia})	
+				.done(this.afterPostHandler)
+				.fail(function(){
+					alert("Fallo en la creacion del elemento");
+				})
+			}
 
-					$.ajax({url:constantes.BASE_URL + this.menuChoice + "/" + this.currentId,
-						method:"PUT",
-						data: this.noticia})
-					.done(this.putSubmitData)
-				}
+			
 
 			},
 			afterPostHandler(){
