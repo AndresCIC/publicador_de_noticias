@@ -16,7 +16,8 @@
 						<noticiasDetail @cancelDetail ="removeDetail" @forceUpdate = "forceUpdate" :currentId = "elegido" :state ="state" role="tabpanel" class="float-right"> </noticiasDetail>
 					</td>
 				</tr>
-				
+				<customMessage>
+				</customMessage>
 				<tbody @click="" v-for="(noticia, index) in lista">
 
 					<tr v-on:click="renderDetail(noticia.Id)">
@@ -45,10 +46,12 @@
 	import constantes from './constants.js';
 	import noticiasDetail from './noticiasDetail.vue';
 	import { EventBus } from './eventBus.js';
+	import customMessage from 'customMessage.vue';
 	export default{
 		name: "Noticias",
 		components:{
 			noticiasDetail,
+			customMessage,
 		},
 		data (){
 			return{
