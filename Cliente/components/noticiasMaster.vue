@@ -13,9 +13,10 @@
 				</thead>			
 				<tr  v-if="computeShowNewDetail">
 					<td colspan="6">
-						<detail @cancelDetail ="removeDetail" @forceUpdate = "forceUpdate" :currentId = "elegido" :state ="state" role="tabpanel" class="float-right"> </detail>
+						<noticiasDetail @cancelDetail ="removeDetail" @forceUpdate = "forceUpdate" :currentId = "elegido" :state ="state" role="tabpanel" class="float-right"> </noticiasDetail>
 					</td>
 				</tr>
+				
 				<tbody @click="" v-for="(noticia, index) in lista">
 
 					<tr v-on:click="renderDetail(noticia.Id)">
@@ -24,15 +25,17 @@
 						<td>{{noticia.Tipo}}</td>
 						<td>{{noticia.FechaPublicacion}}</td>
 
-					</tr>
+					</tr>					
+
+					<transition name="fade">
 					<tr id="detail-tr" v-if="noticia.Id == elegido">
 						<td colspan="6">
-							<detail @makeGet= "recargarMaster" @forceUpdate = "forceUpdate" @cancelDetail = "removeDetail" :currentId = "elegido" :state = "state" role="tabpanel" class="float-right"> </detail>
+							<noticiasDetail  @makeGet= "recargarMaster" @forceUpdate = "forceUpdate" @cancelDetail = "removeDetail" :currentId = "elegido" :state = "state" role="tabpanel" class="float-right"> </noticiasDetail>
 						</td>
 					</tr>
-					
+					</transition>					
 				</tbody>
-
+				
 			</table>
 			
 		</table>
@@ -40,11 +43,12 @@
 </template>
 <script type="text/javascript">
 	import constantes from './constants.js';
-	import detail from './noticiasDetail.vue'	
+	import noticiasDetail from './noticiasDetail.vue';
+	import { EventBus } from './eventBus.js';
 	export default{
 		name: "Noticias",
 		components:{
-			detail,
+			noticiasDetail,
 		},
 		data (){
 			return{
@@ -52,6 +56,9 @@
 				menuChoice:"Noticias",
 				state: "",
 				elegido : "",
+				messageType: 'alert-',
+				message: '',
+				showMessage : false,
 
 			}
 		},
@@ -77,7 +84,7 @@
 			},
 			recargarMaster: function(){
 				this.removeDetail();
-				this.makeGetListRequest();
+				this.makeGetListRequest()
 			},
 			removeDetail: function(){
 				this.elegido = "";
@@ -140,13 +147,27 @@
 	},
 	created(){
 		this.makeGetListRequest();
+		EventBus.$on('Message', (type, message) => {
+			this.showMessage = true;
+			this.messageType += type;
+			this.message = message;
+		});
 	},
 }
 </script>
-<style type="text/css">
+<style type="text/css" scoped>
 	#detail-tr:hover{
 		background-color: white;
-	}
+	};
 
+.fade-enter-active, .fade-leave-active {
+   	opacity: 1;
+   	transition: height 300ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
+    transition: 
+	
+};
+.fade-enter, .fade-leave-to  {
+  opacity: 0;
+};
 
 </style>

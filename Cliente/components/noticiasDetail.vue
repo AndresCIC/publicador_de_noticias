@@ -61,10 +61,9 @@
 	  MEDIUM: 2,
 	  LARGE: 3,
 	};
-	import { EventBus } from './eventBus.js';
 	import constantes from './constants.js';
 	import modal  from './modal.vue';
-
+	import { EventBus } from './eventBus.js';
 	export default{
 		created() {
 			EventBus.$on('enableDetail', read => {
@@ -84,7 +83,6 @@
 				menuChoice : "Noticias",
 				estaVacio : false,
 				showModal : false
-
 			}
 		},
 		props:[
@@ -134,25 +132,24 @@
 				this.previousNoticia = $.extend({}, this.noticia)
 			},
 			buttonBorrar: function(){
-				EventBus.$on('Confirmation', confirm => {
+				EventBus.$once('Confirmation', confirm => {
 					if(confirm === 'OK'){
 						$.ajax({
 								url:constantes.BASE_URL + this.menuChoice + "/" + this.currentId,
 								method: "DELETE"
 							})
-							.done(this.borradoHandler)
-							.fail(function(){alert("Ha habido un error al borrar.");})
+							.done(this.borradoHandler(this))
+							.fail(EventBus.$emit('error', 'Se ha producido un error al borrar'))
 						}
 								
-				});
-					
+				});					
 			},
 			buttonCancelar: function(){
 				this.$emit('cancelDetail', true);
 
 			},
 			borradoHandler: function(){
-				alert("Elemento borrado correctamente.");
+				EventBus.$emit('Message', 'success', 'Se ha borrado correctamente');
 				this.$emit('makeGet', true);
 				this.makeEmptyData();
 			},
@@ -206,7 +203,7 @@
 			makeEmptyData(){
 				if(!this.estaVacio){
 					this.noticia = {};
-					this.currentId = "";
+					//this.currentId = "";
 					this.noticia.Nombre = "";
 					this.noticia.Autor = "";
 					this.noticia.Estilo = "";
@@ -248,6 +245,8 @@
 				this.estaVacio = true;
 				this.isEditable = true;
 			}
+			this.$on('sucess', function (msg) {
+  				console.log(msg);})
 		},
 		updated(){
 		/*	if(this.state == constantes.STATE_NEW){
