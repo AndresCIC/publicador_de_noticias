@@ -6,11 +6,8 @@
 				<a id='Noticias'  data-toggle="tab"  class="nav-link active" href=""  role="tab"  @click="currentView='Noticias'" v-on:click.prevent="">Noticias</a>
 			  </li>
 			  <li class="nav-item">
-				 <a id="Plantillas" class="nav-link" data-toggle="tab" href="" role="tab"  @click="currentView='Plantillas'" v-on:click.prevent="">Plantillas</a>
-			  </li>
-			  <li class="nav-item">
-				<a id="Perfiles" class="nav-link" data-toggle="tab" href="" role="tab"  @click="currentView='Perfiles'" v-on:click.prevent=""> Perfiles de usuarios</a>
-			  </li>
+				 <a id="Redactores" class="nav-link" data-toggle="tab" href="" role="tab"  @click="currentView='Redactores'" v-on:click.prevent="">Redactores</a>
+			  </li>			
 			</ul>
 
 		</div>
@@ -26,7 +23,7 @@
 
 <script>
 	import Noticias from './noticiasMaster.vue'
-	import detail from './detail.vue'
+	import Redactores from './redactoresMaster.vue'
 
 	import constantes from './constants.js'
 
@@ -34,7 +31,7 @@
 	export default{
 		components:{
 			Noticias,
-			detail
+			Redactores,
 			
 		},
 		data (){

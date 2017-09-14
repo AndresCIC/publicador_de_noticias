@@ -12,6 +12,7 @@ namespace formulario.Entities
         public string Nombre { get; set; }
         public string Apellidos { get; set; }
         public Rol RolRedactor { get; set; }
+        public bool Disable { get; set; }
 
     }
 }
