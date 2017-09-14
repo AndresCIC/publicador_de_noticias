@@ -4,6 +4,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity;
+using formulario.Entities;
 
 namespace formulario.Models
 {
@@ -34,5 +35,13 @@ namespace formulario.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<Redactor> Redactores { get; set; }
+
+        public static ApplicationDbContext CreateRedactoresDB()
+        {
+            return new ApplicationDbContext();
+        }
+
     }
 }

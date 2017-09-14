@@ -272,8 +272,10 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RedactoresController.cs" />
     <Compile Include="Controllers\NoticiasController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Entities\Redactor.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -282,10 +284,14 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="NoEncontradoException.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
+    <Compile Include="Repository\IRedactoresRepository.cs" />
     <Compile Include="Repository\INoticiasRepository.cs" />
+    <Compile Include="Repository\RedactoresRespository.cs" />
     <Compile Include="Repository\NoticiasRepository.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
+    <Compile Include="Servicios\IRedactoresService.cs" />
     <Compile Include="Servicios\INoticiasService.cs" />
+    <Compile Include="Servicios\RedactoresService.cs" />
     <Compile Include="Servicios\NoticiasService.cs" />
     <Compile Include="Entities\Noticia.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
