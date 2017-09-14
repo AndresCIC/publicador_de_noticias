@@ -13,6 +13,7 @@ namespace formulario
         public TipoDeNoticia Tipo { get; set; }
         public string Titulo { get; set; }
         public string Contenido { get; set; }
+        public bool Publicado { get; set; }
         public DateTime FechaPublicacion { get; set; }
 
     }

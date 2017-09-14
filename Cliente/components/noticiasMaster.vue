@@ -1,6 +1,6 @@
 <template>
 	<div id="noticiasMaster">
-		<table class="table">
+
 			<table class="table table-hover" role="tablist">
 				<thead>
 					<tr>
@@ -11,13 +11,11 @@
 						<th> <i class="fa fa-user-plus" aria-hidden="true" v-on:click="getNewDetail()"></i> </a></th>
 					</tr>
 				</thead>			
-				<tr  v-if="computeShowNewDetail">
+				<tr v-if="computeShowNewDetail">
 					<td colspan="6">
 						<noticiasDetail @cancelDetail ="removeDetail" @forceUpdate = "forceUpdate" :currentId = "elegido" :state ="state" role="tabpanel" class="float-right"> </noticiasDetail>
 					</td>
-				</tr>
-				<customMessage>
-				</customMessage>
+				</tr>					
 				<tbody @click="" v-for="(noticia, index) in lista">
 
 					<tr v-on:click="renderDetail(noticia.Id)">
@@ -31,27 +29,47 @@
 					<transition name="fade">
 					<tr id="detail-tr" v-if="noticia.Id == elegido">
 						<td colspan="6">
-							<noticiasDetail  @makeGet= "recargarMaster" @forceUpdate = "forceUpdate" @cancelDetail = "removeDetail" :currentId = "elegido" :state = "state" role="tabpanel" class="float-right"> </noticiasDetail>
-						</td>
+							<noticiasDetail  @makeGet= "recargarMaster" @showCustomMessage="showCustomMessage" @forceUpdate = "forceUpdate" @cancelDetail = "removeDetail" :currentId = "elegido" :state = "state" role="tabpanel" class="float-right"> </noticiasDetail>
+						</td>						
 					</tr>
-					</transition>					
-				</tbody>
+					
+				</transition>
 				
+										
+				</tbody>
+						
 			</table>
-			
-		</table>
+
+			<modal v-if="showMessage">
+			    <!--
+			      you can use custom content here to overwrite
+			      default content
+			    -->
+			    <i slot="header"/>
+		    	<p slot="body"> 
+		    		<customMessage :message="message" :messageType="messageType" @closeMessage="showMessage = false" >					
+					</customMessage> 
+				</p>
+				<p slot="buttonAccept"></p>
+				<p slot="buttonCancel"></p>
+
+			    
+			  </modal>
+
 	</div>
 </template>
 <script type="text/javascript">
 	import constantes from './constants.js';
-	import noticiasDetail from './noticiasDetail.vue';
+	import noticiasDetail from './noticiasDetail.vue';	
+	import customMessage from './customMessage.vue';
 	import { EventBus } from './eventBus.js';
-	import customMessage from 'customMessage.vue';
+	import modal  from './modal.vue';
 	export default{
-		name: "Noticias",
+		name: "Noticias_Master",		
 		components:{
 			noticiasDetail,
 			customMessage,
+			modal,
 		},
 		data (){
 			return{
@@ -60,8 +78,8 @@
 				state: "",
 				elegido : "",
 				messageType: 'alert-',
-				message: '',
 				showMessage : false,
+				message : '',
 
 			}
 		},
@@ -69,6 +87,10 @@
 			computeShowNewDetail(){
 				return this.state === constantes.STATE_NEW;
 			},
+			computedMessage(){
+				var _mutableMessage = this.message;
+				return _mutableMessage;
+			}
 		},
 		methods:{
 			makeGetListRequest(){
@@ -84,6 +106,11 @@
 			forceUpdate: function(){
 				this.removeDetail();
 				this.makeGetListRequest();
+			},
+			showCustomMessage: function(type,message){				
+				this.messageType = type;
+				this.message = message;
+				this.showMessage = true;
 			},
 			recargarMaster: function(){
 				this.removeDetail();
@@ -150,9 +177,9 @@
 	},
 	created(){
 		this.makeGetListRequest();
-		EventBus.$on('Message', (type, message) => {
+		EventBus.$on('showCustomMessage', (type, message) => {
 			this.showMessage = true;
-			this.messageType += type;
+			this.messageType = type;
 			this.message = message;
 		});
 	},

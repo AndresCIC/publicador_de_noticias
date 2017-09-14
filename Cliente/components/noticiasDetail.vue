@@ -132,14 +132,15 @@
 				this.previousNoticia = $.extend({}, this.noticia)
 			},
 			buttonBorrar: function(){
+				var self = this;
 				EventBus.$once('Confirmation', confirm => {
 					if(confirm === 'OK'){
 						$.ajax({
 								url:constantes.BASE_URL + this.menuChoice + "/" + this.currentId,
 								method: "DELETE"
 							})
-							.done(this.borradoHandler(this))
-							.fail(EventBus.$emit('error', 'Se ha producido un error al borrar'))
+							.done(function() {self.borradoHandler()})
+							.fail(function(){self.$emit('showCustomMessage','alert-danger', 'Se ha producido un error al borrar')})
 						}
 								
 				});					
@@ -148,8 +149,8 @@
 				this.$emit('cancelDetail', true);
 
 			},
-			borradoHandler: function(){
-				EventBus.$emit('Message', 'success', 'Se ha borrado correctamente');
+			borradoHandler: function(){								
+				this.$emit('showCustomMessage', 'alert-success', 'Noticia borrada correctamente');
 				this.$emit('makeGet', true);
 				this.makeEmptyData();
 			},
@@ -191,19 +192,20 @@
 
 			}, 	
 			makeGetRequest(){
+				var self = this;
 				$.ajax({
 					url: constantes.BASE_URL + this.menuChoice + "/" + this.currentId,
 					method: "GET"
 				})
 				.done(this.submitGetRequest)
 				.fail(function(){
-					alert("Ha fallado la carga del objeto");
+					self.$emit('showCustomMessage', 'alert-danger', 'Se ha producido un fallo al cargar la noticia');
 				})
 			},
 			makeEmptyData(){
 				if(!this.estaVacio){
 					this.noticia = {};
-					//this.currentId = "";
+					this.currentId = "";
 					this.noticia.Nombre = "";
 					this.noticia.Autor = "";
 					this.noticia.Estilo = "";

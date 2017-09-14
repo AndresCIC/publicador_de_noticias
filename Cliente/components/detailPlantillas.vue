@@ -151,7 +151,8 @@
 
 			},
 			borradoHandler: function(){
-				alert("Elemento borrado correctamente.");
+				this.$emit('showCustomMessage', ('success','Elemento borrado con éxito');
+					console.log('paso por aqui');
 				this.$emit('makeGet', true);
 				this.makeEmptyData();
 			},

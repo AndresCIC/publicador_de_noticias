@@ -19,13 +19,16 @@
 
           <div class="modal-footer">
             <slot name="footer">
-              
+              <slot name="buttonAccept">
               <button class="modal-default-button btn" @click="emitConfirmation('OK'), $emit('close')">
                 Aceptar
               </button>
+            </slot>
+            <slot name="buttonCancel">
               <button class="modal-default-button btn btn-primary" @click="emitConfirmation('KO'), $emit('close')">
                 Cancelar
               </button>
+            </slot>
             </slot>
           </div>
         </div>
