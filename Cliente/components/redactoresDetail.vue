@@ -161,11 +161,9 @@
 					data: this.redactor})	
 				.done(function() {self.afterPostHandler()})
 				.fail(function(){
-					alert("Fallo en la creacion del elemento");
+					self.$emit('showCustomMessage','alert-error', 'Fallo al crear el elemento');
 				})
-			}
-
-			
+			}			
 
 			},
 			afterPostHandler: function(){
@@ -189,7 +187,7 @@
 				})
 				.done(this.submitGetRequest)
 				.fail(function(){
-					self.$emit('showCustomMessage', 'alert-danger', 'Se ha producido un fallo al cargar la redactor');
+					self.$emit('showCustomMessage', 'alert-danger', 'Se ha producido un fallo al cargar el redactor');
 				})
 			},
 			makeEmptyData(){

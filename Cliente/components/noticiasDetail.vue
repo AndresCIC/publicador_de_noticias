@@ -15,7 +15,6 @@
 			<div class="form-group">
 				<label>Tipo:</label>
 				<select required v-model="noticia.Tipo" class="form-control" :disabled="!isEditable">
-				Cronologica, InteresHumano, Futuro, Espacial 
 					<option value=1>Cronológica</option>
 					<option value=2>Interés humano</option>
 					<option value=3>Futuro</option>
@@ -35,9 +34,9 @@
 			<label>	<input :disabled="!isEditable" class="checkbox" type="checkbox" v-model="noticia.Publicado" id="PublicarInput">Publicar</label>
 			<center>
 				<div class="form-group">
-					<button  id="acceptButton" :disabled="this.computeAcceptButton" class="btn btn-primary" v-on:click="buttonAccept">Aceptar</button>
+					<button  id="acceptButton" class="btn btn-primary" v-on:click="buttonAccept">Aceptar</button>
 
-					 <button id="borrarButton" :disabled="this.computeDeleteButton" class="btn btn-danger" v-on:click="showModal = true, buttonBorrar()">Borrar</button>
+					 <button id="borrarButton"  class="btn btn-danger" v-on:click="showModal = true, buttonBorrar()">Borrar</button>
 					  <!-- use the modal component, pass in the prop -->
 					  <modal v-if="showModal" @close="showModal = false">
 					    <!--
@@ -98,7 +97,7 @@
 					return false;
 				}
 				else if(this.state == constantes.STATE_UPDATE){
-					if(this.noticia.Nombre != this.previousNoticia.Nombre){
+					if(this.noticia.titulo != this.previousNoticia.titulo){
 						return false;
 					}
 					else if(this.noticia.Autor != this.previousNoticia.Autor){
@@ -247,8 +246,6 @@
 				this.estaVacio = true;
 				this.isEditable = true;
 			}
-			this.$on('sucess', function (msg) {
-  				console.log(msg);})
 		},
 		updated(){
 		/*	if(this.state == constantes.STATE_NEW){
